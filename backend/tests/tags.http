@@ -1,0 +1,35 @@
+GET http://127.0.0.1:5000/tags/raw
+###
+GET http://127.0.0.1:5000/tags
+###
+GET http://127.0.0.1:5000/tags/6
+###
+POST http://127.0.0.1:5000/tags
+Content-Type: multipart/form-data; boundary=----FormBoundary1234
+
+------FormBoundary1234
+Content-Disposition: form-data; name="tag"
+Content-Type: text/plain
+
+nowytag12334
+------FormBoundary1234
+
+### 
+PATCH http://127.0.0.1:5000/photos/tags
+Content-Type: application/json
+
+{
+    "id": 1684997313764,
+    "tag": "essuniawariacik"
+}
+###
+PATCH http://127.0.0.1:5000/photos/tags/mass
+Content-Type: application/json
+
+{
+    "id": 1685033117897,
+    "tags": ["love", "photooftheday", "doupa", "esia", "super", "ds"]
+}
+###
+GET http://127.0.0.1:5000/photos/tags/1684997480466
+###

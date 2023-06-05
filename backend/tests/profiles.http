@@ -1,0 +1,27 @@
+GET http://localhost:5000/profile
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFzZGZAYXNkZi5jb20iLCJpYXQiOjE2ODU1NjI3MDEsImV4cCI6MTY4NTU2NDUwMX0.pxh4dImrZIGf4ACYsvttK4gv7wRRTJtI3u5A2DYMQgw
+###
+PATCH http://localhost:5000/profile
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFzZGZAYXNkZi5jb20iLCJpYXQiOjE2ODU1NjI3MDEsImV4cCI6MTY4NTU2NDUwMX0.pxh4dImrZIGf4ACYsvttK4gv7wRRTJtI3u5A2DYMQgw
+Content-Type: application/json
+
+{
+    "name": "something",
+    "lastName": "something" 
+}
+###
+POST http://localhost:5000/profile
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFzZGZAYXNkZi5jb20iLCJpYXQiOjE2ODU1NjI3MDEsImV4cCI6MTY4NTU2NDUwMX0.pxh4dImrZIGf4ACYsvttK4gv7wRRTJtI3u5A2DYMQgw
+Content-Type: multipart/form-data; boundary=----FormBoundary1234
+
+------FormBoundary1234
+Content-Disposition: form-data; name="file"; filename="profile.png"
+Content-Type: image/jpeg
+
+< ../input.png
+
+------FormBoundary1234
+###
+GET http://localhost:5000/logout
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFzZGZAYXNkZi5jb20iLCJpYXQiOjE2ODU1NjI3MDEsImV4cCI6MTY4NTU2NDUwMX0.pxh4dImrZIGf4ACYsvttK4gv7wRRTJtI3u5A2DYMQgw
+###

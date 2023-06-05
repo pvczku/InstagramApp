@@ -1,0 +1,22 @@
+POST http://localhost:5000/user/register
+Content-Type: application/json
+
+{
+    "name": "asd",
+    "lastName": "asd",
+    "email": "asd@asd.com",
+    "password": "asd"
+}
+###
+GET http://localhost:5000/user/confirm/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFzZEBhc2QuY29tIiwiaGFzaGVkUGFzcyI6IiQyYSQxMCRnSHhMTVNTSjFyaVFURkhjYk9haFhPQWR1c3pnS0JybW11ZHJMbVRJaE9QdjdpNzU1RWlURyIsImlhdCI6MTY4NTg5Njc2MiwiZXhwIjoxNjg1ODk2NzkyfQ.nYMfhQuCS6nr375xgiBQjZzkPt2MP43hOJX1narXl74
+###
+POST http://localhost:5000/user/login
+Content-Type: application/json
+
+{
+    "email": "asdf@asdf.com",
+    "password": "asdf"
+}
+###
+GET http://localhost:5000/user
+###

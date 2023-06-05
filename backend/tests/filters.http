@@ -1,0 +1,91 @@
+GET http://127.0.0.1:5000/filters/metadata/1685457400660
+###
+PATCH http://127.0.0.1:5000/filters
+Content-Type: application/json
+
+{
+    "id": 1685199451054,
+    "change": "rotate",
+    "value": 90
+}
+###
+PATCH http://127.0.0.1:5000/filters
+Content-Type: application/json
+
+{
+    "id": 1685441430599,
+    "change": "resize",
+    "value": {
+        "width": 30,
+        "height": 100
+    }
+}
+###
+PATCH http://127.0.0.1:5000/filters
+Content-Type: application/json
+
+{
+    "id": 1685441430599,
+    "change": "reformat",
+    "value": "jpg"
+}
+###
+PATCH http://127.0.0.1:5000/filters
+Content-Type: application/json
+
+{
+    "id": 1685116193051,
+    "change": "crop",
+    "value": {
+        "width":200,
+        "height":200,
+        "left":30,
+        "top":50
+    }
+}
+###
+PATCH http://127.0.0.1:5000/filters
+Content-Type: application/json
+
+{
+    "id": 1685199687783,
+    "change": "grayscale"
+}
+###
+PATCH http://127.0.0.1:5000/filters
+Content-Type: application/json
+
+{
+    "id": 1685365017995,
+    "change": "flip"
+}
+###
+PATCH http://127.0.0.1:5000/filters
+Content-Type: application/json
+
+{
+    "id": 1685365122599,
+    "change": "flop"
+}
+###
+PATCH http://127.0.0.1:5000/filters
+Content-Type: application/json
+
+{
+    "id": 1685365122599,
+    "change": "negate"
+}
+###
+PATCH http://127.0.0.1:5000/filters
+Content-Type: application/json
+
+{
+    "id": 1685365122599,
+    "change": "tint",
+    "value": {
+        "r":150,
+        "g":150,
+        "b":150
+    }
+}
+###

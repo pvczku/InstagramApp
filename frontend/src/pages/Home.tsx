@@ -13,10 +13,9 @@ function Home() {
   });
 
   return (
-    <>
-      <p>home</p>
+    <div style={{ display: "flex" }}>
       <Navbar></Navbar>
-    </>
+    </div>
   );
 }
 

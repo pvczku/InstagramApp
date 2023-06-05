@@ -2,12 +2,13 @@ import React, { useState } from "react";
 import { useEffect } from "react";
 import Cookies from "universal-cookie";
 import { useNavigate } from "react-router-dom";
+import Navbar from "../components/Navbar";
 
 interface Data {
-    id:number
-    email:string
-    name:string
-    lastName:string
+  id: number;
+  email: string;
+  name: string;
+  lastName: string;
 }
 
 function Profile() {
@@ -36,13 +37,14 @@ function Profile() {
   const token = cookies.get("token");
   //   const [data, setData] = useState({});
   return (
-    <>
+    <div style={{ display: "flex" }}>
+      <Navbar></Navbar>
       {data ? (
         <p>
           {data.name} {data.lastName} ({data.email})
         </p>
       ) : null}
-    </>
+    </div>
   );
 }
 

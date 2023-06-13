@@ -1,138 +1,175 @@
-import React, { useState, useRef } from "react";
-import {
-  FormControl,
-  FormLabel,
-  FormErrorMessage,
-  FormHelperText,
-  Input,
-  InputGroup,
-  InputRightElement,
-  Button,
-  ButtonGroup,
-  Alert,
-  AlertTitle,
-  AlertIcon,
-  AlertDescription,
-} from "@chakra-ui/react";
+import { useState } from "react";
 import Cookies from "universal-cookie";
 import { useNavigate } from "react-router-dom";
+import {
+  Alert,
+  Button,
+  ButtonGroup,
+  Card,
+  Divider,
+  Grid,
+  Snackbar,
+  TextField,
+} from "@mui/material";
 
 function LoginForm() {
   const [error, setError] = useState("");
-  const [show, setShow] = useState(false);
+  const [open, setOpen] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const cookies = new Cookies();
   const navigate = useNavigate();
 
-  const handleEmail = (e: any) => {
-    if (e.target) {
-      console.log(e.target.value);
-      setEmail(e.target.value);
+  const handleValidation = () => {
+    let formIsValid = true;
+    if (!email) {
+      formIsValid = false;
+      setError("Email cannot be empty");
+      setOpen(true);
+    } else {
+      let lastAtPos = email.lastIndexOf("@");
+      let lastDotPos = email.lastIndexOf(".");
+      if (
+        !(
+          lastAtPos < lastDotPos &&
+          lastAtPos > 0 &&
+          email.indexOf("@@") == -1 &&
+          lastDotPos > 2 &&
+          email.length - lastDotPos > 2
+        )
+      ) {
+        formIsValid = false;
+        setError("Email is not valid");
+        setOpen(true);
+      }
     }
+    if (!password) {
+      formIsValid = false;
+      setError("Password cannot be empty");
+      setOpen(true);
+    }
+    return formIsValid;
   };
-  const handlePassword = (e: any) => {
-    if (e.target) {
-      console.log(e.target.value);
-      setPassword(e.target.value);
-    }
+
+  const handleClose = () => {
+    setOpen(false);
   };
 
   const handleSubmit = async (e: any) => {
-    e.preventDefault();
-    const formData = {
-      email: email,
-      password: password,
-    };
-    console.log(formData);
-    const response = await fetch("https://dev.pkulma.pl/api/user/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-    }).then((res) => {
-      console.log(
-        res.headers.get("Authorization"), // Bearer <token>
-        res.json().then((data) => {
-          console.log(data); // odpowiedz z serwera
-          if (data.message === "user authorized") {
-            setError("");
-            const token = res.headers.get("Authorization")!.split("Bearer ")[1];
-            cookies.set("token", token, { path: "/", maxAge: 1800 });
-            navigate("/home");
-          } else {
-            setError("Wrong login data");
-          }
-        })
-      );
-    });
+    const validated = handleValidation();
+    if (validated) {
+      e.preventDefault();
+      const formData = {
+        email: email,
+        password: password,
+      };
+      await fetch("https://dev.pkulma.pl/api/user/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      }).then((res) => {
+        console.log(
+          res.headers.get("Authorization"), // Bearer <token>
+          res.json().then((data) => {
+            console.log(data); // odpowiedz z serwera
+            if (data.message === "user authorized") {
+              setError("");
+              const token = res.headers
+                .get("Authorization")!
+                .split("Bearer ")[1];
+              cookies.set("token", token, { path: "/", maxAge: 1800 });
+              navigate("/home");
+            } else {
+              setError("Wrong login data");
+            }
+          })
+        );
+      });
+    }
   };
 
-  const handleShow = () => setShow(!show);
   return (
-    <div>
-      <h1>Login</h1>
-      <FormControl>
-        <Input
-          id={"loginEmail"}
-          onChange={handleEmail}
-          focusBorderColor="purple.400"
-          variant="filled"
-          type="email"
-          placeholder="E-mail"
-          value={email}
-        />
-        <InputGroup size="md">
-          <Input
-            id={"loginPassword"}
-            focusBorderColor="purple.400"
-            variant="filled"
-            pr="4.5rem"
-            type={show ? "text" : "password"}
-            placeholder="Password"
-            onChange={handlePassword}
-            value={password}
+    <Grid
+      container
+      justifyContent={"center"}
+      alignItems={"center"}
+      height={"100vh"}
+    >
+      <Card
+        variant="outlined"
+        style={{ width: "max-content", padding: "2.5rem" }}
+      >
+        <h1
+          style={{
+            textAlign: "center",
+            fontSize: "32px",
+            marginBottom: "20px",
+          }}
+        >
+          Login
+        </h1>
+        <form
+          onSubmit={handleSubmit}
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            rowGap: "1.25rem",
+          }}
+        >
+          <TextField
+            onChange={(e) => setEmail(e.target.value)}
+            label="E-mail"
+            variant="outlined"
+            value={email}
+            type="email"
           />
-          <InputRightElement width="4.5rem">
-            <Button
-              className="input-show-button"
-              backgroundColor="purple.400"
-              color={"white"}
-              h="1.75rem"
-              size="sm"
-              onClick={handleShow}
-            >
-              {show ? "Hide" : "Show"}
-            </Button>
-          </InputRightElement>
-        </InputGroup>
-        <ButtonGroup display={"flex"} justifyContent={"flex-start"} spacing="5">
-          <Button onClick={handleSubmit} variant={"solid"} colorScheme="purple" w={"100px"}>
-            Submit
-          </Button>
-          <Button
-            onClick={async () => {
-              setEmail("");
-              setPassword("");
-              console.log(email, password);
-            }}
-            variant={"outline"}
-            colorScheme="purple"
-            w={"100px"}
+          <TextField
+            onChange={(e) => setPassword(e.target.value)}
+            label="Password"
+            variant="outlined"
+            value={password}
+            type="password"
+          />
+          <ButtonGroup
+            variant="contained"
+            aria-label="outlined primary button group"
+            disableElevation
+            style={{ width: "max-content", alignSelf: "center" }}
           >
-            Reset
+            <Button onClick={handleSubmit} variant="contained">
+              Log In
+            </Button>
+            <Button
+              onClick={() => {
+                setEmail("");
+                setPassword("");
+              }}
+              variant="outlined"
+            >
+              Reset
+            </Button>
+          </ButtonGroup>
+        </form>
+        <Divider style={{ margin: "2rem 0 2rem 0" }} />
+        <p>
+          Don't have an account?{" "}
+          <Button variant="text" onClick={() => navigate("/register")}>
+            Sign Up
           </Button>
-        </ButtonGroup>
-        {error ? (
-          <Alert status="error">
-            <AlertIcon />
-            <AlertTitle>Wrong login data</AlertTitle>
-            <AlertDescription>User does not exist or you passed in the wrong data</AlertDescription>
-          </Alert>
-        ) : null}
-      </FormControl>
-    </div>
+        </p>
+      </Card>
+      <Snackbar
+        anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+        open={open}
+        onClose={handleClose}
+        key={"bottom" + "left"}
+        autoHideDuration={3000}
+      >
+        <Alert severity="error">{error}</Alert>
+      </Snackbar>
+    </Grid>
   );
 }
 

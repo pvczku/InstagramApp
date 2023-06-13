@@ -23,16 +23,16 @@ function User() {
     }).then((res) => {
       res.json().then((data) => {
         console.log(data);
+        console.log(data);
         setData(data);
       });
     });
+    return true;
   };
-
-  //! FIX THAT SHIT
 
   const fetchProfile = async () => {
     if (data) {
-      const res = await fetch("https://dev.pkulma.pl/api/profile/getPP/" + data.id, {
+      const res = await fetch("https://dev.pkulma.pl/api/profile/getPP/" + data.email, {
         method: "GET",
         headers: { Authorization: "Bearer " + token },
       });
@@ -41,25 +41,31 @@ function User() {
       setProfile(imageObjectUrl);
     }
   };
-  const fetchEverything = async () => {
-    const userData = await fetchData();
-    const images = await fetch("https://dev.pkulma.pl/api/photos").then((res) => {
+  const fetchImages = async () =>
+    fetch("https://dev.pkulma.pl/api/photos").then((res) => {
       res.json().then((data) => {
         let particularPosts = [];
+        console.log(data);
         for (let i = 0; i < data.length; i++) {
           particularPosts.push(data[i]);
         }
+        console.log(particularPosts);
+        console.log(posts);
         setPosts(particularPosts);
       });
     });
-    const pp = await fetchProfile();
+
+  const fetchAll = async () => {
+    fetchData();
+    fetchImages();
   };
 
   useEffect(() => {
-    fetchEverything();
-
-    trigger = false;
-  }, [trigger]);
+    fetchAll();
+  }, []);
+  useEffect(() => {
+    fetchProfile();
+  }, [data]);
 
   return (
     <>
@@ -72,8 +78,8 @@ function User() {
           <div>{data.email}</div>
         </>
       ) : null}
-      {posts.length > 0
-        ? posts.map((post, index) => (post.addedBy === id ? <Post object={post} key={index}></Post> : null))
+      {posts.length > 0 && data
+        ? posts.map((post, index) => (post.addedBy === data.email ? <Post object={post} key={index}></Post> : null))
         : null}
     </>
   );

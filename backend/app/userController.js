@@ -97,21 +97,35 @@ const userController = {
       }
     });
   },
-  getProfileData: async (email) => {
-    let found = false;
-    for (const user of model.users) {
-      console.log(user.email === email);
-      if (user.email == email) {
-        console.log("esia");
-        found = true;
-        console.log(user.name, user.lastName, user.email);
-        return user;
+  getProfileData: async (id, email) => {
+    if (email === null) {
+      let found = false;
+      for (const user of model.users) {
+        if (user.id == id) {
+          found = true;
+          console.log(user.name, user.lastName, user.email);
+          return user;
+        }
       }
-    }
-    if (!found) {
-      return {
-        message: "user not found",
-      };
+      if (!found) {
+        return {
+          message: "user not found",
+        };
+      }
+    } else {
+      let found = false;
+      for (const user of model.users) {
+        if (user.email == email) {
+          found = true;
+          console.log(user.name, user.lastName, user.email);
+          return user;
+        }
+      }
+      if (!found) {
+        return {
+          message: "user not found",
+        };
+      }
     }
   },
   getProfilePic: (email) => {
@@ -186,6 +200,7 @@ const userController = {
     }
   },
   getAllUsers: () => {
+    console.log(model.users);
     return model.users;
   },
 };

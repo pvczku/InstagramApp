@@ -82,8 +82,10 @@ const userRouter = async (req, res) => {
       } else if (req.url === "/profile") {
         const token = req.headers.authorization.split("Bearer ")[1];
         const auth = await userController.auth(token);
+        console.log(auth, "tutaj!!!!!!!!!!!!!!");
         if (typeof auth === "object") {
-          const { id } = await userController.getProfileData(auth.email);
+          console.log("fetch zdjecia profilowego poszedl");
+          const { id } = await userController.getProfileData(null, auth.email);
           const form = formidable({ multiples: false });
           form.parse(req, async (err, fields, file) => {
             if (err) {
@@ -190,7 +192,7 @@ const userRouter = async (req, res) => {
             if (typeof auth === "object") {
               const userID = req.url.split("/profile/")[1];
 
-              const response = await userController.getProfileData();
+              const response = await userController.getProfileData(userID, null);
               if (response.message) {
                 res.writeHead(404, { "Content-Type": "application/json" });
                 res.end(
@@ -214,7 +216,7 @@ const userRouter = async (req, res) => {
             const token = req.headers.authorization.split("Bearer ")[1];
             const auth = await userController.auth(token);
             if (typeof auth === "object") {
-              const response = await userController.getProfileData(auth.email);
+              const response = await userController.getProfileData(null, auth.email);
               if (response.message) {
                 res.writeHead(404, { "Content-Type": "application/json" });
                 res.end(

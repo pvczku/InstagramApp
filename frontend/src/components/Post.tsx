@@ -25,6 +25,7 @@ function Post(props: { object: SinglePost; key: number }) {
   const [tags, setTags] = useState<Tag[]>([]);
   const [profile, setProfile] = useState("");
   const [users, setUsers] = useState<UserInterface[]>([]);
+  const [user, setUser] = useState<number>();
   const fetchProfile = async () => {
     const res = await fetch("https://dev.pkulma.pl/api/profile/getPP/" + props.object.addedBy, {
       method: "GET",
@@ -50,10 +51,15 @@ function Post(props: { object: SinglePost; key: number }) {
   };
 
   const fetchAllUsers = async () => {
-    const users = await fetch("https://dev.pkulma.pl/api/user/all").then((res) =>
+    const user = await fetch("https://dev.pkulma.pl/api/user/all").then((res) =>
       res.json().then((data) => {
         console.log(data);
         setUsers(data);
+        for (let i = 0; i < data.length; i++) {
+          if (data[i].email === props.object.addedBy) {
+            setUser(data[i].id);
+          }
+        }
       })
     );
   };
@@ -69,10 +75,14 @@ function Post(props: { object: SinglePost; key: number }) {
     <>
       <div style={{ display: "flex", justifyContent: "flex-start", alignItems: "center" }}>
         {profile ? <Avatar src={profile} /> : <Avatar src={"/defaultPP.jpg"} />}
-        
-        <Link as={ReactLink} to={"/user/" + props.object.addedBy}>
-          @{props.object.addedBy}
-        </Link>
+
+        {user ? (
+          <Link as={ReactLink} to={"/user/" + user}>
+            @{props.object.addedBy}
+          </Link>
+        ) : (
+          <p>@{props.object.addedBy}</p>
+        )}
       </div>
       <img style={{ maxWidth: "500px " }} src={img} alt="post" />
       <p>{props.object.desc}</p>

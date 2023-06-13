@@ -115,15 +115,12 @@ function RegisterForm() {
     }
   };
   const handleVerify = async () => {
-    const response = await fetch(
-      `https://dev.pkulma.pl/api/user/confirm/${token}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    ).then((res) => {
+    const response = await fetch(`https://dev.pkulma.pl/api/user/confirm/${token}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }).then((res) => {
       res.json().then((data) => {
         console.log(data);
         if (data.message === "user verified") {
@@ -136,16 +133,8 @@ function RegisterForm() {
     });
   };
   return (
-    <Grid
-      container
-      justifyContent={"center"}
-      alignItems={"center"}
-      height={"100vh"}
-    >
-      <Card
-        variant="outlined"
-        style={{ width: "max-content", padding: "2.5rem" }}
-      >
+    <Grid container justifyContent={"center"} alignItems={"center"} height={"100vh"}>
+      <Card variant="outlined" style={{ width: "max-content", padding: "2.5rem" }}>
         <h1
           style={{
             textAlign: "center",
@@ -241,7 +230,7 @@ function RegisterForm() {
       {token ? (
         <Snackbar
           anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-          open={openVerify}
+          open={true}
           onClose={handleCloseVerify}
           autoHideDuration={10000}
         >

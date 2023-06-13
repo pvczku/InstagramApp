@@ -238,19 +238,21 @@ function RegisterForm() {
       >
         <Alert severity="error">{error}</Alert>
       </Snackbar>
-      <Snackbar
-        anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-        open={openVerify}
-        onClose={handleCloseVerify}
-        autoHideDuration={10000}
-      >
-        <Alert severity="info">
-          Please confirm your account by clicking the button{" "}
-          <Button onClick={handleVerify} variant={"contained"}>
-            Verify
-          </Button>
-        </Alert>
-      </Snackbar>
+      {token ? (
+        <Snackbar
+          anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+          open={openVerify}
+          onClose={handleCloseVerify}
+          autoHideDuration={10000}
+        >
+          <Alert severity="info">
+            Please confirm your account by clicking the button{" "}
+            <Button onClick={handleVerify} variant={"contained"}>
+              Verify
+            </Button>
+          </Alert>
+        </Snackbar>
+      ) : null}
     </Grid>
     // <div>
     //   <h1>Register</h1>

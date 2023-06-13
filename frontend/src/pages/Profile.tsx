@@ -21,7 +21,7 @@ import {
   AlertDescription,
 } from "@chakra-ui/react";
 
-export  interface Data {
+export interface Data {
   id: number;
   email: string;
   name: string;

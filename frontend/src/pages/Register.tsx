@@ -15,12 +15,6 @@ function Register() {
   return (
     <>
       <RegisterForm></RegisterForm>
-      <p>
-        Already have an account?{" "}
-        <Link as={ReactLink} to={"/login"}>
-          Sign In
-        </Link>
-      </p>
     </>
   );
 }

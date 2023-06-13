@@ -1,16 +1,7 @@
 import { useState } from "react";
 
 import { useNavigate } from "react-router-dom";
-import {
-  Alert,
-  Button,
-  ButtonGroup,
-  Card,
-  Divider,
-  Grid,
-  Snackbar,
-  TextField,
-} from "@mui/material";
+import { Alert, Button, ButtonGroup, Card, Divider, Grid, Snackbar, TextField } from "@mui/material";
 
 function RegisterForm() {
   const navigate = useNavigate();
@@ -81,6 +72,7 @@ function RegisterForm() {
     e.preventDefault();
     const validated = handleValidation();
     setError("");
+    setOpen(false);
     if (validated) {
       const formData = {
         name: name,
@@ -107,6 +99,7 @@ function RegisterForm() {
       );
     } else {
       setError("Passwords do not match!");
+      setOpen(true);
     }
   };
   const handleVerify = async () => {
@@ -128,16 +121,8 @@ function RegisterForm() {
     });
   };
   return (
-    <Grid
-      container
-      justifyContent={"center"}
-      alignItems={"center"}
-      height={"100vh"}
-    >
-      <Card
-        variant="outlined"
-        style={{ width: "max-content", padding: "2.5rem" }}
-      >
+    <Grid container justifyContent={"center"} alignItems={"center"} height={"100vh"}>
+      <Card variant="outlined" style={{ width: "max-content", padding: "2.5rem" }}>
         <h1
           style={{
             textAlign: "center",
@@ -231,14 +216,10 @@ function RegisterForm() {
         <Alert severity="error">{error}</Alert>
       </Snackbar>
       {token ? (
-        <Snackbar
-          anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-          open={true}
-          autoHideDuration={10000}
-        >
-          <Alert severity="info">
+        <Snackbar anchorOrigin={{ vertical: "bottom", horizontal: "left" }} open={true} autoHideDuration={10000}>
+          <Alert severity="info" style={{ display: "flex", alignItems: "center" }}>
             Please confirm your account by clicking the button{" "}
-            <Button onClick={handleVerify} variant={"contained"}>
+            <Button onClick={handleVerify} variant={"contained"} style={{ marginLeft: "1rem" }}>
               Verify
             </Button>
           </Alert>

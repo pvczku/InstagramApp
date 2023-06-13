@@ -122,7 +122,7 @@ function RegisterForm() {
   };
   return (
     <Grid container justifyContent={"center"} alignItems={"center"} height={"100vh"}>
-      <Card variant="outlined" style={{ width: "max-content", padding: "2.5rem" }}>
+      <Card variant="outlined" style={{ width: "max-content", padding: "2.5rem", borderRadius: "20px" }}>
         <h1
           style={{
             textAlign: "center",

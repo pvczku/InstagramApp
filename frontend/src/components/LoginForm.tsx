@@ -1,16 +1,7 @@
 import { useState } from "react";
 import Cookies from "universal-cookie";
 import { useNavigate } from "react-router-dom";
-import {
-  Alert,
-  Button,
-  ButtonGroup,
-  Card,
-  Divider,
-  Grid,
-  Snackbar,
-  TextField,
-} from "@mui/material";
+import { Alert, Button, ButtonGroup, Card, Divider, Grid, Snackbar, TextField } from "@mui/material";
 
 function LoginForm() {
   const [error, setError] = useState("");
@@ -76,9 +67,7 @@ function LoginForm() {
             console.log(data); // odpowiedz z serwera
             if (data.message === "user authorized") {
               setError("");
-              const token = res.headers
-                .get("Authorization")!
-                .split("Bearer ")[1];
+              const token = res.headers.get("Authorization")!.split("Bearer ")[1];
               cookies.set("token", token, { path: "/", maxAge: 1800 });
               navigate("/home");
             } else {
@@ -91,15 +80,10 @@ function LoginForm() {
   };
 
   return (
-    <Grid
-      container
-      justifyContent={"center"}
-      alignItems={"center"}
-      height={"100vh"}
-    >
+    <Grid container justifyContent={"center"} alignItems={"center"} height={"100vh"}>
       <Card
         variant="outlined"
-        style={{ width: "max-content", padding: "2.5rem" }}
+        style={{ width: "max-content", padding: "2.5rem", borderRadius: "20px"}}
       >
         <h1
           style={{

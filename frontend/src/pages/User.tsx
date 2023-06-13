@@ -53,7 +53,6 @@ function User() {
       });
     });
     const pp = await fetchProfile();
-    profile, "posciki";
   };
 
   useEffect(() => {

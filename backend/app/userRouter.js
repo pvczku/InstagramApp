@@ -108,10 +108,24 @@ const userRouter = async (req, res) => {
       break;
     case "GET":
       if (req.url.search("/user") != -1) {
-        if (req.url.split("/user/")[1].split("/")[0] === "confirm") {
+        if (req.url.split("/user")[1] === "/all") {
+          const data = userController.getAllUsers();
+          console.log(data);
+          res.writeHead(200, { "content-type": "application/json" });
+          let array = [];
+          for (let i = 0; i < data.length; i++) {
+            array.push({
+              confirmed: data[i].confirmed,
+              email: data[i].email,
+              id: data[i].id,
+              lastName: data[i].lastName,
+              name: data[i].name,
+            });
+          }
+          res.end(JSON.stringify(array));
+        } else if (req.url.split("/user/")[1].split("/")[0] === "confirm") {
           const token = req.url.split("/user/")[1].split("/")[1];
           const response = await userController.verifyUser(token);
-          console.log(response);
           if (!response.message) {
             let found = false;
             for (let i = 0; i < model.users.length; i++) {
@@ -120,7 +134,6 @@ const userRouter = async (req, res) => {
                 res.writeHead(200, { "Content-Type": "application/json" });
                 found = true;
                 res.end(JSON.stringify({ message: "user verified" }));
-                console.log(model.users);
               }
             }
             if (!found) {
@@ -130,12 +143,10 @@ const userRouter = async (req, res) => {
                   message: "user not verified (expired or invalid token)",
                 })
               );
-              console.log(model.users);
             }
           }
         }
       } else if (req.url.search("/profile") != -1) {
-        console.log(req.url);
         if (req.url.search("/getPP") != -1) {
           if (req.url.search("/getPP/") != -1) {
             const email = req.url.split("getPP/")[1];
@@ -150,7 +161,6 @@ const userRouter = async (req, res) => {
                     return undefined;
                   } else {
                     res.writeHead(200, { "content-type": "image/jpeg" });
-                    console.log(content);
                     res.end(content);
                   }
                 });
@@ -167,7 +177,6 @@ const userRouter = async (req, res) => {
                     return undefined;
                   } else {
                     res.writeHead(200, { "content-type": "image/jpeg" });
-                    console.log(content);
                     res.end(content);
                   }
                 });
@@ -175,14 +184,12 @@ const userRouter = async (req, res) => {
             }
           }
         } else {
-          console.log("to tu");
           if (req.url.split("/profile")[1] !== "") {
             const token = req.headers.authorization.split("Bearer ")[1];
             const auth = await userController.auth(token);
             if (typeof auth === "object") {
-              console.log("szukam czyichś danych");
               const userID = req.url.split("/profile/")[1];
-              
+
               const response = await userController.getProfileData();
               if (response.message) {
                 res.writeHead(404, { "Content-Type": "application/json" });

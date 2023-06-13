@@ -11,11 +11,20 @@ export interface Tag {
   popularity: number;
 }
 
+export interface UserInterface {
+  confirmed: boolean;
+  email: string;
+  id: number;
+  lastName: string;
+  name: string;
+}
+
 function Post(props: { object: SinglePost; key: number }) {
   const token = new Cookies().get("token");
   const [img, setImg] = useState("");
   const [tags, setTags] = useState<Tag[]>([]);
   const [profile, setProfile] = useState("");
+  const [users, setUsers] = useState<UserInterface[]>([]);
   const fetchProfile = async () => {
     const res = await fetch("https://dev.pkulma.pl/api/profile/getPP/" + props.object.addedBy, {
       method: "GET",
@@ -40,7 +49,17 @@ function Post(props: { object: SinglePost; key: number }) {
     });
   };
 
+  const fetchAllUsers = async () => {
+    const users = await fetch("https://dev.pkulma.pl/api/user/all").then((res) =>
+      res.json().then((data) => {
+        console.log(data);
+        setUsers(data);
+      })
+    );
+  };
+
   useEffect(() => {
+    fetchAllUsers();
     fetchImage();
     fetchTags();
     fetchProfile();
@@ -50,7 +69,7 @@ function Post(props: { object: SinglePost; key: number }) {
     <>
       <div style={{ display: "flex", justifyContent: "flex-start", alignItems: "center" }}>
         {profile ? <Avatar src={profile} /> : <Avatar src={"/defaultPP.jpg"} />}
-
+        
         <Link as={ReactLink} to={"/user/" + props.object.addedBy}>
           @{props.object.addedBy}
         </Link>

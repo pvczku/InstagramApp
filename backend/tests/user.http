@@ -18,5 +18,3 @@ Content-Type: application/json
     "password": "asdf"
 }
 ###
-GET http://localhost:5000/user
-###

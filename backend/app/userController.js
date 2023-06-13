@@ -185,6 +185,9 @@ const userController = {
       }
     }
   },
+  getAllUsers: () => {
+    return model.users;
+  },
 };
 
 module.exports = userController;

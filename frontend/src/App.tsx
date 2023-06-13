@@ -4,11 +4,25 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Home from "./pages/Home";
 import Handler from "./pages/Handler";
 import Profile from "./pages/Profile";
+import Upload from "./pages/Upload";
+import User from "./pages/User";
 
 const router = createBrowserRouter([
   {
     path: "/login",
     element: <Login />,
+  },
+  {
+    path: "/user/:id",
+    element: <User />,
+  },
+  {
+    path: "/upload",
+    element: <Upload />,
+  },
+  {
+    path: "/upload/imageEditor",
+    element: <Upload />,
   },
   {
     path: "/register",
@@ -22,6 +36,7 @@ const router = createBrowserRouter([
     path: "/profile",
     element: <Profile />,
   },
+
   {
     path: "/",
     element: <Handler />,
@@ -29,7 +44,11 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  return <RouterProvider router={router} />;
+  return (
+    <>
+      <RouterProvider router={router} />
+    </>
+  );
 }
 
 export default App;

@@ -2,6 +2,8 @@ const formidable = require("formidable");
 const model = require("./model");
 const userController = require("./userController");
 const jwt = require("jsonwebtoken");
+const jsonController = require("./jsonController");
+const fs = require("fs");
 
 const userRouter = async (req, res) => {
   switch (req.method) {
@@ -133,30 +135,99 @@ const userRouter = async (req, res) => {
           }
         }
       } else if (req.url.search("/profile") != -1) {
-        console.log("to tu");
-        const token = req.headers.authorization.split("Bearer ")[1];
-        console.log(token)
-        const auth = await userController.auth(token);
-        if (typeof auth === "object") {
-          const response = await userController.getProfileData(auth.email);
-          if (response.message) {
-            res.writeHead(404, { "Content-Type": "application/json" });
-            res.end(
-              JSON.stringify({
-                message: response.message,
-              })
-            );
+        console.log(req.url);
+        if (req.url.search("/getPP") != -1) {
+          if (req.url.search("/getPP/") != -1) {
+            const email = req.url.split("getPP/")[1];
+            const token = req.headers.authorization.split("Bearer ")[1];
+            const auth = await userController.auth(token);
+            if (typeof auth === "object") {
+              const imageURL = await userController.getPP(email);
+              // const imageURL = userData.profilePic;
+              if (imageURL !== undefined) {
+                await fs.readFile(imageURL, (err, content) => {
+                  if (err) {
+                    return undefined;
+                  } else {
+                    res.writeHead(200, { "content-type": "image/jpeg" });
+                    console.log(content);
+                    res.end(content);
+                  }
+                });
+              } else return;
+            }
           } else {
-            res.writeHead(200, { "Content-Type": "application/json" });
-            res.end(JSON.stringify(response));
+            const token = req.headers.authorization.split("Bearer ")[1];
+            const auth = await userController.auth(token);
+            if (typeof auth === "object") {
+              const imageURL = await userController.getPP(auth.email);
+              if (imageURL !== undefined) {
+                await fs.readFile(imageURL, (err, content) => {
+                  if (err) {
+                    return undefined;
+                  } else {
+                    res.writeHead(200, { "content-type": "image/jpeg" });
+                    console.log(content);
+                    res.end(content);
+                  }
+                });
+              } else return;
+            }
           }
         } else {
-          res.writeHead(404, { "Content-Type": "application/json" });
-          res.end(
-            JSON.stringify({
-              message: "token expired",
-            })
-          );
+          console.log("to tu");
+          if (req.url.split("/profile")[1] !== "") {
+            const token = req.headers.authorization.split("Bearer ")[1];
+            const auth = await userController.auth(token);
+            if (typeof auth === "object") {
+              console.log("szukam czyichś danych");
+              const userID = req.url.split("/profile/")[1];
+              
+              const response = await userController.getProfileData();
+              if (response.message) {
+                res.writeHead(404, { "Content-Type": "application/json" });
+                res.end(
+                  JSON.stringify({
+                    message: response.message,
+                  })
+                );
+              } else {
+                res.writeHead(200, { "Content-Type": "application/json" });
+                res.end(JSON.stringify(response));
+              }
+            } else {
+              res.writeHead(404, { "Content-Type": "application/json" });
+              res.end(
+                JSON.stringify({
+                  message: "token expired",
+                })
+              );
+            }
+          } else {
+            const token = req.headers.authorization.split("Bearer ")[1];
+            const auth = await userController.auth(token);
+            if (typeof auth === "object") {
+              const response = await userController.getProfileData(auth.email);
+              if (response.message) {
+                res.writeHead(404, { "Content-Type": "application/json" });
+                res.end(
+                  JSON.stringify({
+                    message: response.message,
+                  })
+                );
+              } else {
+                res.writeHead(200, { "Content-Type": "application/json" });
+                res.end(JSON.stringify(response));
+              }
+            } else {
+              res.writeHead(404, { "Content-Type": "application/json" });
+              res.end(
+                JSON.stringify({
+                  message: "token expired",
+                })
+              );
+            }
+          }
         }
       } else if (req.url.search("/logout") != -1) {
         console.log("esia");

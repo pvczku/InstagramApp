@@ -6,6 +6,7 @@ const model = require("./model.js");
 const path = require("path");
 const tagsController = require("./tagsController.js");
 const fs = require("fs");
+const userController = require("./userController.js");
 
 const router = async (req, res) => {
   const url = req.url;
@@ -75,15 +76,18 @@ const router = async (req, res) => {
       if (req.url === "/photos") {
         const id = new Date().getTime();
         const form = formidable({ multiples: false });
-        form.parse(req, (err, fields, file) => {
+        form.parse(req, async (err, fields, file) => {
           if (err) {
             res.writeHead(err.httpCode || 400, { "Content-Type": "text/plain" });
             res.end(String(err));
             return;
           }
-          res.writeHead(200, { "Content-Type": "application/json" });
-          res.end(JSON.stringify(file, null, 2));
-          fileController.saveImage(id, fields.album, file);
+          const user = await userController.auth(req.headers.authorization.split("Bearer ")[1]);
+          const message = await fileController.saveImage(id, user.email, fields.desc, file);
+          const fileJson = await jsonController.getImage(id);
+          res.writeHead(200, { "Content-Type": "text/plain" });
+          console.log(user, file, "esia");
+          res.end(String(id));
         });
       }
       break;
@@ -106,7 +110,7 @@ const router = async (req, res) => {
               res.end(String(err));
               return;
             }
-            const imgID = data.id;
+            const imgID = Number(data.id);
             const tag = data.tag;
             const response = tagsController.assignTag(imgID, tag);
             if (response !== null) {
@@ -122,8 +126,8 @@ const router = async (req, res) => {
               res.end(String(err));
               return;
             }
-            const imgID = data.id;
-            const tags = data.tags;
+            const imgID = Number(data.id);
+            const tags = data.tags.split(",");
             const response = tagsController.assignTags(imgID, tags);
             if (response !== null) {
               res.writeHead(200, { "Content-Type": "application/json" });

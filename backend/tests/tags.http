@@ -2,7 +2,7 @@ GET http://127.0.0.1:5000/tags/raw
 ###
 GET http://127.0.0.1:5000/tags
 ###
-GET http://127.0.0.1:5000/tags/6
+GET http://127.0.0.1:5000/tags/30
 ###
 POST http://127.0.0.1:5000/tags
 Content-Type: multipart/form-data; boundary=----FormBoundary1234
@@ -19,17 +19,17 @@ PATCH http://127.0.0.1:5000/photos/tags
 Content-Type: application/json
 
 {
-    "id": 1684997313764,
-    "tag": "essuniawariacik"
+    "id": 1686222527467,
+    "tag": "dlaczegotodzialaxd"
 }
 ###
 PATCH http://127.0.0.1:5000/photos/tags/mass
 Content-Type: application/json
 
 {
-    "id": 1685033117897,
-    "tags": ["love", "photooftheday", "doupa", "esia", "super", "ds"]
+    "id": 1686287535374,
+    "tags": ["dlaczegotodzialaxd", "oof"]
 }
 ###
-GET http://127.0.0.1:5000/photos/tags/1684997480466
+GET http://127.0.0.1:5000/photos/tags/1686222527021
 ###

@@ -1,13 +1,15 @@
 const model = require("./model");
 
 const jsonController = {
-  addImage: (id, album, url) => {
+  addImage: (id, album, desc, url) => {
     let photos = model.photos;
     let something = {
       id: id,
       album: album,
+      addedBy: album,
       url: url,
       lastChange: "original",
+      desc: desc,
       history: [
         {
           status: "original",
@@ -16,6 +18,8 @@ const jsonController = {
       ],
     };
     model.photos = [something, ...photos];
+    console.log(model.photos)
+    return something;
   },
   getImage: (id) => {
     let photos = model.photos;
@@ -48,7 +52,7 @@ const jsonController = {
           newChange = {
             status: status,
             timestamp: timestamp,
-            url: url
+            url: url,
           };
         } else {
           newChange = {

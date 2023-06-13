@@ -34,10 +34,11 @@ function Navbar() {
         </li>
         <li style={{ display: "flex", alignItems: "center" }}>
           <HomeIcon />
-          <Link as={ReactLink} to={"/home"}>
+          <Link as={ReactLink} to={"/upload"}>
             Upload
           </Link>
         </li>
+
         <li style={{ display: "flex", alignItems: "center" }}>
           <HomeIcon />
           <Link as={ReactLink} to={"/profile"}>

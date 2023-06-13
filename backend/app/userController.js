@@ -105,12 +105,7 @@ const userController = {
         console.log("esia");
         found = true;
         console.log(user.name, user.lastName, user.email);
-        return {
-          id: user.id,
-          name: user.name,
-          lastName: user.lastName,
-          email: user.email,
-        };
+        return user;
       }
     }
     if (!found) {
@@ -126,7 +121,7 @@ const userController = {
       if (user.email == email) {
         console.log("esia");
         found = true;
-        console.log(user.name, user.lastName, user.email);
+        console.log(user.name, user.lastName, user.email, user.profilePic);
         return {
           id: user.id,
           name: user.name,
@@ -174,6 +169,19 @@ const userController = {
       }
       if (found === false) {
         return { message: "no user" };
+      }
+    }
+  },
+  getPP: async (email) => {
+    let found = false;
+    for (let i = 0; i < model.users.length; i++) {
+      if (model.users[i].email === email && model.users.length !== 0) {
+        found = true;
+        if (model.users[i].profilePic === undefined) {
+          return undefined;
+        } else {
+          return model.users[i].profilePic;
+        }
       }
     }
   },

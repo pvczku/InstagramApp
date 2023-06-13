@@ -5,7 +5,7 @@ Content-Type: multipart/form-data; boundary=----FormBoundary1234
 Content-Disposition: form-data; name="file"; filename="input.png"
 Content-Type: image/jpeg
 
-< ../input.png
+< ../wall.png
 
 ------FormBoundary1234
 Content-Disposition: form-data; name="album"
@@ -17,7 +17,7 @@ testowy_folder
 ###
 GET http://127.0.0.1:5000/photos
 ###
-GET http://127.0.0.1:5000/getfile/1685365017995
+GET http://127.0.0.1:5000/getfile/1686220178007
 ###
 GET http://127.0.0.1:5000/getfile/1685365017995/tint
 ###

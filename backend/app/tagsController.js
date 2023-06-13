@@ -80,6 +80,7 @@ const tagsController = {
     }
   },
   assignTags: (imgID, tags) => {
+    console.log(tags);
     let photoExists = false;
     for (const photo of model.photos) {
       if (photo.id === imgID) {

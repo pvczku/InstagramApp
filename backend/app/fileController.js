@@ -3,7 +3,7 @@ const fs = require("fs");
 const jsonController = require("./jsonController.js");
 
 const fileController = {
-  saveImage: (id, album, file) => {
+  saveImage: (id, album, desc, file) => {
     const oldPath = file.file.path;
     let newPath = __dirname;
     newPath = newPath.split("app")[0];
@@ -13,10 +13,12 @@ const fileController = {
       if (!dirExists) {
         fs.mkdirSync(__dirname.split("app")[0] + "uploads/" + album);
       }
-      fs.rename(oldPath, newPath, function (err) {
-        if (err) throw err;
-        else {
-          jsonController.addImage(id, album, newPath);
+      fs.rename(oldPath, newPath, async function (err) {
+        if (err) {
+          console.log(err);
+        } else {
+          jsonController.addImage(id, album, desc, newPath);
+          
         }
       });
     }

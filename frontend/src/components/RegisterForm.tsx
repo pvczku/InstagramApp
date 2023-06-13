@@ -1,17 +1,16 @@
-import React, { useState, useRef } from "react";
+import { useState } from "react";
+
+import { useNavigate } from "react-router-dom";
 import {
-  FormControl,
-  FormLabel,
-  FormErrorMessage,
-  FormHelperText,
-  Input,
-  InputGroup,
-  InputRightElement,
+  Alert,
   Button,
   ButtonGroup,
-} from "@chakra-ui/react";
-import { useNavigate } from "react-router-dom";
-import { Alert, Card, Divider, Grid, Snackbar, TextField } from "@mui/material";
+  Card,
+  Divider,
+  Grid,
+  Snackbar,
+  TextField,
+} from "@mui/material";
 
 function RegisterForm() {
   const navigate = useNavigate();
@@ -23,12 +22,8 @@ function RegisterForm() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [open, setOpen] = useState(false);
-  const [openVerify, setOpenVerify] = useState(false);
   const handleClose = () => {
     setOpen(false);
-  };
-  const handleCloseVerify = () => {
-    setOpenVerify(false);
   };
 
   const handleValidation = () => {
@@ -94,7 +89,7 @@ function RegisterForm() {
         password: password,
       };
       console.log(formData);
-      const response = await fetch("https://dev.pkulma.pl/api/user/register", {
+      await fetch("https://dev.pkulma.pl/api/user/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -115,7 +110,7 @@ function RegisterForm() {
     }
   };
   const handleVerify = async () => {
-    const response = await fetch(`https://dev.pkulma.pl/api/user/confirm/${token}`, {
+    await fetch(`https://dev.pkulma.pl/api/user/confirm/${token}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -133,8 +128,16 @@ function RegisterForm() {
     });
   };
   return (
-    <Grid container justifyContent={"center"} alignItems={"center"} height={"100vh"}>
-      <Card variant="outlined" style={{ width: "max-content", padding: "2.5rem" }}>
+    <Grid
+      container
+      justifyContent={"center"}
+      alignItems={"center"}
+      height={"100vh"}
+    >
+      <Card
+        variant="outlined"
+        style={{ width: "max-content", padding: "2.5rem" }}
+      >
         <h1
           style={{
             textAlign: "center",
@@ -231,7 +234,6 @@ function RegisterForm() {
         <Snackbar
           anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
           open={true}
-          onClose={handleCloseVerify}
           autoHideDuration={10000}
         >
           <Alert severity="info">
@@ -243,116 +245,6 @@ function RegisterForm() {
         </Snackbar>
       ) : null}
     </Grid>
-    // <div>
-    //   <h1>Register</h1>
-    //   <FormControl>
-    //     <Input
-    //       required
-    //       onChange={(e) => setName(e.target.value)}
-    //       id="name"
-    //       border={"2px solid black"}
-    //       focusBorderColor="purple.400"
-    //       variant="filled"
-    //       placeholder="First Name"
-    //       value={name}
-    //     />
-    //     <Input
-    //       onChange={handleLastName}
-    //       value={lastName}
-    //       id="lastName"
-    //       border={"2px solid black"}
-    //       focusBorderColor="purple.400"
-    //       variant="filled"
-    //       placeholder="Last Name"
-    //     />
-    //     <Input
-    //       required
-    //       border={"2px solid black"}
-    //       id={"registerEmail"}
-    //       onChange={handleEmail}
-    //       focusBorderColor="purple.400"
-    //       variant="filled"
-    //       type="email"
-    //       placeholder="E-mail"
-    //       value={email}
-    //     />
-    //     <InputGroup size="md">
-    //       <Input
-    //         required
-    //         border={"2px solid black"}
-    //         id={"registerPassword"}
-    //         focusBorderColor="purple.400"
-    //         variant="filled"
-    //         pr="4.5rem"
-    //         type={show ? "text" : "password"}
-    //         placeholder="Password"
-    //         onChange={handlePassword}
-    //         value={password}
-    //       />
-    //     </InputGroup>
-    //     <InputGroup size="md">
-    //       <Input
-    //         required
-    //         border={"2px solid black"}
-    //         id={"registerConfirmPassword"}
-    //         focusBorderColor="purple.400"
-    //         variant="filled"
-    //         pr="4.5rem"
-    //         type={show ? "text" : "password"}
-    //         placeholder="Confirm Password"
-    //         onChange={handleConfirmPassword}
-    //         value={confirmPassword}
-    //       />
-    //       <InputRightElement width="4.5rem">
-    //         <Button
-    //           className="input-show-button"
-    //           backgroundColor="purple.400"
-    //           color={"white"}
-    //           h="1.75rem"
-    //           size="sm"
-    //           onClick={handleShow}
-    //         >
-    //           {show ? "Hide" : "Show"}
-    //         </Button>
-    //       </InputRightElement>
-    //     </InputGroup>
-    //     <p className="errorLog">{error}</p>
-    //     <ButtonGroup display={"flex"} justifyContent={"flex-start"} spacing="5">
-    //       <Button
-    //         onClick={handleRegisterSubmit}
-    //         variant={"solid"}
-    //         colorScheme="purple"
-    //         w={"100px"}
-    //       >
-    //         Submit
-    //       </Button>
-    //       <Button
-    //         onClick={async () => {
-    //           setEmail("");
-    //           setPassword("");
-    //           setConfirmPassword("");
-    //           setName("");
-    //           setLastName("");
-    //         }}
-    //         variant={"outline"}
-    //         colorScheme="purple"
-    //         w={"100px"}
-    //       >
-    //         Reset
-    //       </Button>
-    //     </ButtonGroup>
-    //     {token ? (
-    //       <Button
-    //         onClick={handleVerify}
-    //         variant={"outline"}
-    //         colorScheme="purple"
-    //         w={"250px"}
-    //       >
-    //         Verify Account
-    //       </Button>
-    //     ) : null}
-    //   </FormControl>
-    // </div>
   );
 }
 

@@ -6,6 +6,14 @@ import Handler from "./pages/Handler";
 import Profile from "./pages/Profile";
 import Upload from "./pages/Upload";
 import User from "./pages/User";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+import CssBaseline from "@mui/material/CssBaseline";
+
+const darkTheme = createTheme({
+  palette: {
+    mode: "dark",
+  },
+});
 
 const router = createBrowserRouter([
   {
@@ -46,7 +54,10 @@ const router = createBrowserRouter([
 function App() {
   return (
     <>
-      <RouterProvider router={router} />
+      <ThemeProvider theme={darkTheme}>
+        <CssBaseline />
+        <RouterProvider router={router} />
+      </ThemeProvider>
     </>
   );
 }

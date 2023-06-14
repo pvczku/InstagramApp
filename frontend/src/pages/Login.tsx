@@ -11,7 +11,23 @@ function Login() {
       navigate("/home");
     }
   });
-  return <LoginForm></LoginForm>;
+  return (
+    <>
+      <div
+        style={{
+          backgroundImage: "url('/background.jpg')",
+          filter: "blur(5px)",
+          width: "100vw",
+          height: "100vh",
+          position: "absolute",
+          top: "0",
+          left: "0",
+          zIndex: "-100",
+        }}
+      ></div>
+      <LoginForm></LoginForm>
+    </>
+  );
 }
 
 export default Login;

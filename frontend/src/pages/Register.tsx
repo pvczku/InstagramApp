@@ -1,6 +1,5 @@
-import React, { useEffect } from "react";
-import { Link } from "@chakra-ui/react";
-import { Link as ReactLink, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import RegisterForm from "../components/RegisterForm";
 import Cookies from "universal-cookie";
 
@@ -14,6 +13,18 @@ function Register() {
   });
   return (
     <>
+      <div
+        style={{
+          backgroundImage: "url('/background.jpg')",
+          filter: "blur(5px)",
+          width: "100vw",
+          height: "100vh",
+          position: "absolute",
+          top: "0",
+          left: "0",
+          zIndex: "-100",
+        }}
+      ></div>
       <RegisterForm></RegisterForm>
     </>
   );

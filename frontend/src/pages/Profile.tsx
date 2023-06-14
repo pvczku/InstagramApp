@@ -1,25 +1,8 @@
-import React, { useState } from "react";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import Cookies from "universal-cookie";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
-import { Button } from "@chakra-ui/react";
-import { Avatar, AvatarBadge, AvatarGroup } from "@chakra-ui/react";
-import { Divider } from "@chakra-ui/react";
-import {
-  FormControl,
-  FormLabel,
-  FormErrorMessage,
-  FormHelperText,
-  Input,
-  InputGroup,
-  InputRightElement,
-  ButtonGroup,
-  Alert,
-  AlertTitle,
-  AlertIcon,
-  AlertDescription,
-} from "@chakra-ui/react";
+import { Card, Grid, Input, TextField, Avatar, Button } from "@mui/material";
 
 export interface Data {
   id: number;
@@ -36,7 +19,22 @@ function Profile() {
   const [img, setImg] = useState("");
   const [name, setName] = useState("");
   const [lastName, setLastName] = useState("");
+  const auth = async () => {
+    await fetch("https://dev.pkulma.pl/api/profile", {
+      method: "GET",
+      headers: { Authorization: "Bearer " + token },
+    }).then((res) =>
+      res.json().then((data) => {
+        if (data.message) {
+          new Cookies().remove("token");
+          navigate("/login");
+        }
+      })
+    );
+  };
   useEffect(() => {
+    auth();
+
     if (!cookies.get("token")) {
       navigate("/login");
     } else {
@@ -47,7 +45,7 @@ function Profile() {
   }, [trigger]);
 
   const fetchData = () => {
-    const response = fetch("https://dev.pkulma.pl/api/profile", {
+    fetch("https://dev.pkulma.pl/api/profile", {
       headers: {
         Authorization: "Bearer " + token,
       },
@@ -64,11 +62,6 @@ function Profile() {
   const navigate = useNavigate();
   const token = cookies.get("token");
 
-  const handleLogout = () => {
-    cookies.remove("token");
-    navigate("/");
-  };
-
   const fetchProfile = async () => {
     const res = await fetch("https://dev.pkulma.pl/api/profile/getPP", {
       method: "GET",
@@ -79,15 +72,10 @@ function Profile() {
     setProfile(imageObjectUrl);
   };
 
-  const handleImg = (e: any) => {
-    console.log(e.target.files[0]);
-    setImg(e.target.files[0]);
-  };
-
   const handleButton = async () => {
     const formData = new FormData();
     formData.append("file", img);
-    const response = await fetch("https://dev.pkulma.pl/api/profile", {
+    await fetch("https://dev.pkulma.pl/api/profile", {
       method: "POST",
       headers: {
         Authorization: "Bearer " + token,
@@ -96,18 +84,12 @@ function Profile() {
     });
     fetchProfile();
   };
-  const handleName = (e: any) => {
-    setName(e.target.value);
-  };
-  const handleLastName = (e: any) => {
-    setLastName(e.target.value);
-  };
   const handleNamesButton = async () => {
     if (name && lastName) {
       const formData = new FormData();
       formData.append("name", name);
       formData.append("lastName", lastName);
-      const response = await fetch("https://dev.pkulma.pl/api/profile", {
+      await fetch("https://dev.pkulma.pl/api/profile", {
         method: "PATCH",
         headers: {
           Authorization: "Bearer " + token,
@@ -120,57 +102,60 @@ function Profile() {
   return (
     <div style={{ display: "flex", flexDirection: "row" }}>
       <Navbar></Navbar>
-      <div style={{ display: "flex", flexDirection: "column" }}>
-        <div style={{ display: "flex" }}>
-          {data ? (
-            <>
-              {data.profilePic ? (
-                <Avatar name={data.name + " " + data.lastName} src={profile} />
-              ) : (
-                <Avatar name={data.name + " " + data.lastName} src="/defaultPP.jpg" />
-              )}
-              <p>
-                {data.name} {data.lastName} ({data.email})
-              </p>
-            </>
-          ) : null}
-          <Button onClick={handleLogout}>Log Out</Button>
-          <hr />
-        </div>
-        <div style={{ height: "500px", width: "500px" }}>
-          <h2>Profile Picture Change</h2>
-          <FormControl>
-            <Input
-              onChange={handleImg}
-              type="file"
-              focusBorderColor="purple.400"
-              variant="filled"
-              placeholder="E-mail"
-            />
-            <Button onClick={handleButton}>Change Profile Picture</Button>
-          </FormControl>
-        </div>
-        <div style={{ height: "500px", width: "500px" }}>
-          <h2>Name and Last Name Change</h2>
-          <FormControl>
-            <Input
-              onChange={handleName}
-              type="text"
-              focusBorderColor="purple.400"
-              variant="filled"
-              placeholder="Name"
-            />
-            <Input
-              onChange={handleLastName}
-              type="text"
-              focusBorderColor="purple.400"
-              variant="filled"
-              placeholder="Last Name"
-            />
-            <Button onClick={handleNamesButton}>Change Name</Button>
-          </FormControl>
-        </div>
-      </div>
+      <Grid container justifyContent={"center"} alignItems={"center"} height={"100vh"}>
+        <Card variant={"outlined"} style={{ width: "max-content", height: "max-content", padding: "2rem" }}>
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "2rem" }}>
+            {data ? (
+              <>
+                {data.profilePic ? (
+                  <Avatar alt={data.name + " " + data.lastName} src={profile} sx={{ width: 200, height: 200 }} />
+                ) : (
+                  <Avatar alt={data.name + " " + data.lastName} sx={{ width: 200, height: 200 }} src="/defaultPP.jpg" />
+                )}
+                <p style={{ fontSize: "42px" }}>
+                  {data.name} {data.lastName}
+                </p>
+                <p>{data.email}</p>
+              </>
+            ) : null}
+          </div>
+          <div style={{ display: "flex", gap: "20px", justifyContent: "center" }}>
+            <form style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+              <Input type="file" onChange={(e: any) => setImg(e.target.files[0])} placeholder="E-mail" />
+              <Button variant="contained" onClick={handleButton}>
+                Change Profile Picture
+              </Button>
+            </form>
+            <form style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+              <TextField
+                onChange={(e) => setName(e.target.value)}
+                label="Name"
+                variant="outlined"
+                value={name}
+                type="email"
+              />
+              <TextField
+                onChange={(e) => setLastName(e.target.value)}
+                label="Last Name"
+                variant="outlined"
+                value={lastName}
+                type="email"
+              />
+              <Button
+                variant="contained"
+                onClick={() => {
+                  handleNamesButton();
+                  setName("");
+                  setLastName("");
+                }}
+              >
+                Change Name
+              </Button>
+            </form>
+          </div>
+        </Card>
+      </Grid>
+      <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}></div>
     </div>
   );
 }

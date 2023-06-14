@@ -1,35 +1,33 @@
-import React from "react";
-import { Link as ReactLink } from "react-router-dom";
+import { Link as ReactLink, useNavigate } from "react-router-dom";
 import { Link } from "@chakra-ui/react";
 import HomeIcon from "@mui/icons-material/Home";
-import SearchIcon from "@mui/icons-material/Search";
+import { Button } from "@mui/material";
+import Cookies from "universal-cookie";
 
 function Navbar() {
+  const cookies = new Cookies();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    cookies.remove("token");
+    navigate("/");
+  };
   return (
-    <>
+    <div
+      style={{
+        fontSize: "30px",
+        display: "flex",
+        flexDirection: "column",
+        width: "15rem",
+        padding: "10px",
+        position: "fixed",
+      }}
+    >
       <ul>
         <li style={{ display: "flex", alignItems: "center" }}>
           <HomeIcon />
           <Link as={ReactLink} to={"/home"}>
             Home
-          </Link>
-        </li>
-        <li style={{ display: "flex", alignItems: "center" }}>
-          <SearchIcon />
-          <Link as={ReactLink} to={"/home"}>
-            Search
-          </Link>
-        </li>
-        <li style={{ display: "flex", alignItems: "center" }}>
-          <HomeIcon />
-          <Link as={ReactLink} to={"/home"}>
-            Explore
-          </Link>
-        </li>
-        <li style={{ display: "flex", alignItems: "center" }}>
-          <HomeIcon />
-          <Link as={ReactLink} to={"/home"}>
-            Messages
           </Link>
         </li>
         <li style={{ display: "flex", alignItems: "center" }}>
@@ -46,7 +44,15 @@ function Navbar() {
           </Link>
         </li>
       </ul>
-    </>
+
+      <Button
+        variant="contained"
+        style={{ height: "max-content", width: "100%", justifySelf: "flex-end" }}
+        onClick={handleLogout}
+      >
+        Log Out
+      </Button>
+    </div>
   );
 }
 

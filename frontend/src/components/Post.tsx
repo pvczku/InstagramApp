@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { SinglePost } from "../pages/Home";
 import Cookies from "universal-cookie";
-import { Avatar, AvatarBadge, AvatarGroup } from "@chakra-ui/react";
+import { Avatar, Card } from "@mui/material";
 import { Link } from "@chakra-ui/react";
 import { Link as ReactLink } from "react-router-dom";
-
+import PostTag from "./PostTag";
 export interface Tag {
   id: number;
   tag: string;
@@ -43,7 +43,7 @@ function Post(props: { object: SinglePost; key: number }) {
   };
 
   const fetchTags = async () => {
-    const tags = await fetch("https://dev.pkulma.pl/api/photos/tags/" + props.object.id).then((res) => {
+    await fetch("https://dev.pkulma.pl/api/photos/tags/" + props.object.id).then((res) => {
       res.json().then((data) => {
         setTags(data.tags);
       });
@@ -51,7 +51,7 @@ function Post(props: { object: SinglePost; key: number }) {
   };
 
   const fetchAllUsers = async () => {
-    const user = await fetch("https://dev.pkulma.pl/api/user/all").then((res) =>
+    await fetch("https://dev.pkulma.pl/api/user/all").then((res) =>
       res.json().then((data) => {
         console.log(data);
         setUsers(data);
@@ -72,22 +72,52 @@ function Post(props: { object: SinglePost; key: number }) {
   }, []);
 
   return (
-    <>
-      <div style={{ display: "flex", justifyContent: "flex-start", alignItems: "center" }}>
-        {profile ? <Avatar src={profile} /> : <Avatar src={"/defaultPP.jpg"} />}
+    <Card variant="outlined" style={{ padding: "2rem", borderRadius: "10px", width: "max-content" }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "flex-start",
+          alignItems: "center",
+          margin: "0 0 2rem 0",
+          gap: "1.5rem",
+        }}
+      >
+        {profile ? (
+          <Avatar style={{ width: "50px", height: "50px" }} src={profile} />
+        ) : (
+          <Avatar src={"/defaultPP.jpg"} />
+        )}
 
         {user ? (
           <Link as={ReactLink} to={"/user/" + user}>
-            @{props.object.addedBy}
+            <b>@{props.object.addedBy}</b>
           </Link>
         ) : (
-          <p>@{props.object.addedBy}</p>
+          <p>
+            <b>@{props.object.addedBy}</b>
+          </p>
         )}
       </div>
-      <img style={{ maxWidth: "500px " }} src={img} alt="post" />
-      <p>{props.object.desc}</p>
-      <p>{tags ? tags.map((tag) => <span key={tags.indexOf(tag)}>{tag.tag} </span>) : "no tags :("}</p>
-    </>
+      <div
+        style={{
+          width: "500px",
+          height: "500px",
+          background: "black",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <img style={{ width: "500px" }} src={img} alt="post" />
+      </div>
+      <p style={{ margin: "20px 0" }}>
+        <b>{props.object.addedBy}: </b>
+        {props.object.desc}
+      </p>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: " " }}>
+        {tags ? tags.map((tag, index) => <PostTag key={index} name={tag.tag}></PostTag>) : "no tags :("}
+      </div>
+    </Card>
   );
 }
 

@@ -61,8 +61,7 @@ function LoginForm() {
         },
         body: JSON.stringify(formData),
       }).then((res) => {
-        console.log(
-          res.headers.get("Authorization"), // Bearer <token>
+        res.headers.get("Authorization"), // Bearer <token>
           res.json().then((data) => {
             console.log(data); // odpowiedz z serwera
             if (data.message === "user authorized") {
@@ -72,19 +71,16 @@ function LoginForm() {
               navigate("/home");
             } else {
               setError("Wrong login data");
+              setOpen(true);
             }
-          })
-        );
+          });
       });
     }
   };
 
   return (
     <Grid container justifyContent={"center"} alignItems={"center"} height={"100vh"}>
-      <Card
-        variant="outlined"
-        style={{ width: "max-content", padding: "2.5rem", borderRadius: "20px"}}
-      >
+      <Card variant="outlined" style={{ width: "max-content", padding: "2.5rem", borderRadius: "20px" }}>
         <h1
           style={{
             textAlign: "center",

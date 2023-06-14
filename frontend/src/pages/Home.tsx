@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Cookies from "universal-cookie";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
@@ -17,7 +17,8 @@ export interface SinglePost {
 function Home() {
   let trigger = true;
   const navigate = useNavigate();
-  const cookies = new Cookies();
+  const token = new Cookies().get("token");
+
   const [posts, setPosts] = useState<SinglePost[]>([]);
 
   const fetchEverything = async () => {
@@ -28,8 +29,23 @@ function Home() {
     });
   };
 
+  const auth = async () => {
+    await fetch("https://dev.pkulma.pl/api/profile", {
+      method: "GET",
+      headers: { Authorization: "Bearer " + token },
+    }).then((res) =>
+      res.json().then((data) => {
+        if (data.message) {
+          new Cookies().remove("token");
+          navigate("/login");
+        }
+      })
+    );
+  };
+
   useEffect(() => {
-    if (!cookies.get("token")) {
+    auth();
+    if (!new Cookies().get("token")) {
       navigate("/login");
     } else {
       fetchEverything();
@@ -40,7 +56,18 @@ function Home() {
   return (
     <div style={{ display: "flex" }}>
       <Navbar></Navbar>
-      <div style={{ display: "flex", flexDirection: "column" }}>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "20px",
+          alignItems: "center",
+          justifyContent: "center",
+          alignContent: "center",
+          width: "100%",
+          padding: "20px 0 20px 0",
+        }}
+      >
         {posts ? posts.map((post) => <Post object={post} key={posts.indexOf(post)}></Post>) : null}
       </div>
     </div>

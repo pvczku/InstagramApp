@@ -214,7 +214,9 @@ const userRouter = async (req, res) => {
             }
           } else {
             const token = req.headers.authorization.split("Bearer ")[1];
+            console.log(token);
             const auth = await userController.auth(token);
+            console.log(auth);
             if (typeof auth === "object") {
               const response = await userController.getProfileData(null, auth.email);
               if (response.message) {
@@ -230,6 +232,7 @@ const userRouter = async (req, res) => {
               }
             } else {
               res.writeHead(404, { "Content-Type": "application/json" });
+              console.log("super");
               res.end(
                 JSON.stringify({
                   message: "token expired",

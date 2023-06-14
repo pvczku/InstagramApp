@@ -88,12 +88,17 @@ const userController = {
   auth: async (token) => {
     return new Promise((res, rej) => {
       try {
+        console.log("dziala try");
         const data = jwt.verify(token, "veryimportantkey");
-        if (typeof data === "object") {
+        console.log(data);
+        if (data.email) {
           res(data);
+        } else {
+          rej("token not existing");
         }
       } catch (err) {
         console.log(err);
+        res({ message: "token invalid" });
       }
     });
   },

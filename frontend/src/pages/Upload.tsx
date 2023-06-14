@@ -1,38 +1,47 @@
-import {
-  FormControl,
-  FormLabel,
-  FormErrorMessage,
-  FormHelperText,
-  Input,
-  InputGroup,
-  InputRightElement,
-  Button,
-  ButtonGroup,
-  Textarea,
-} from "@chakra-ui/react";
-import Chip from "@mui/material/Chip";
-import Autocomplete from "@mui/material/Autocomplete";
-import TextField from "@mui/material/TextField";
-import Stack from "@mui/material/Stack";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import { useNavigate } from "react-router-dom";
 import Cookies from "universal-cookie";
 import Tag from "../components/Tag";
 const cookies = new Cookies();
-import { Alert, AlertIcon, AlertTitle, AlertDescription } from "@chakra-ui/react";
+import { Card, TextField, Button, Snackbar, Alert, Grid } from "@mui/material";
 
 function Upload() {
   const navigate = useNavigate();
   const token = cookies.get("token");
-  if (!cookies.get("token")) {
-    navigate("/login");
-  }
+  const auth = async () => {
+    console.log("esia");
+    await fetch("https://dev.pkulma.pl/api/profile", {
+      method: "GET",
+      headers: { Authorization: "Bearer " + token },
+    }).then((res) =>
+      res.json().then((data) => {
+        if (data.message) {
+          console.log(data.message);
+          new Cookies().remove("token");
+          navigate("/login");
+        } else {
+          console.log("token good");
+        }
+      })
+    );
+  };
+
+  useEffect(() => {
+    auth();
+    if (!cookies.get("token")) {
+      navigate("/login");
+    }
+  }, []);
+
   const [tags, setTags] = useState<any>([]);
   const [tag, setTag] = useState("");
   const [textarea, setTextarea] = useState("");
   const [img, setImg] = useState<any>();
   const [error, setError] = useState<string>("");
+  const [open, setOpen] = useState(false);
+  const [editorImage, setEditorImage] = useState("");
+  const [imageEditorOpen, setImageEditorOpen] = useState(false);
 
   const handleTagInputKeyDown: React.KeyboardEventHandler<HTMLInputElement> = (e) => {
     if (e.key === "Enter") {
@@ -50,31 +59,21 @@ function Upload() {
     }
   };
 
-  const handleTagInputChange = (e: any) => {
-    setTag(e.target.value);
-  };
-
-  const handleTextarea: React.ChangeEventHandler<HTMLTextAreaElement> = (e) => {
-    if (e.target) {
-      setTextarea(e.target.value);
-    }
-  };
-
   const removeTagFromArray = (index: number) => {
     const result = tags.filter((tag: string) => tags.indexOf(tag) !== index);
     setTags(result);
   };
 
-  const handleImage: React.ChangeEventHandler<HTMLInputElement> = (e) => {
-    if (e.target.files) {
-      setImg(e.target.files[0]);
-    }
+  const handleClose = () => {
+    setOpen(false);
   };
 
-  const handlePost = async () => {
+  const handlePost = async (e: any) => {
+    e.preventDefault();
     let imgID: string;
     if (img && tags.length > 0 && textarea) {
       setError("");
+      setOpen(false);
       const formData = new FormData();
       const tagsFormData = new FormData();
       formData.append("file", img, "input.png");
@@ -98,12 +97,12 @@ function Upload() {
         })
       );
       if (tags.length > 1) {
-        const tagsResponse = await fetch("https://dev.pkulma.pl/api/photos/tags/mass", {
+        await fetch("https://dev.pkulma.pl/api/photos/tags/mass", {
           method: "PATCH",
           body: tagsFormData,
         }).then((res) => res.json().then((data) => console.log(data)));
       } else {
-        const tagsResponse = await fetch("https://dev.pkulma.pl/api/photos/tags", {
+        await fetch("https://dev.pkulma.pl/api/photos/tags", {
           method: "PATCH",
           body: tagsFormData,
         }).then((res) =>
@@ -115,52 +114,56 @@ function Upload() {
       navigate("/home");
     } else {
       setError("Not every field is filled");
+      setOpen(true);
     }
   };
 
   return (
     <div style={{ display: "flex" }}>
       <Navbar></Navbar>
-      <div>
-        <FormControl>
-          <Input
-            onChange={handleImage}
-            w={"400px"}
-            h={"400px"}
-            accept="image/png, image/gif, image/jpeg"
-            isRequired={true}
-            type="file"
-            id="file"
-            multiple={false}
-            focusBorderColor="purple.400"
-            variant="filled"
-          />
-          <Textarea onChange={handleTextarea} placeholder="Description..."></Textarea>
-          <div style={{ display: "flex", flexWrap: "wrap", maxWidth: "500px" }}>
-            {tags.length > 0
-              ? tags.map((tag: string) => (
-                  <Tag name={tag} key={tags.indexOf(tag)} number={tags.indexOf(tag)} removeTag={removeTagFromArray} />
-                ))
-              : ""}
-          </div>
-          <Input
-            placeholder="Enter tag..."
-            value={tag}
-            onInput={handleTagInputChange}
-            onKeyUp={handleTagInputKeyDown}
-          ></Input>
-          <Button type="submit" onClick={handlePost}>
-            Post
-          </Button>
-        </FormControl>
-        {error ? (
-          <Alert status="error">
-            <AlertIcon />
-            <AlertTitle>{error}</AlertTitle>
-            <AlertDescription>Please fill every input and try again!</AlertDescription>
-          </Alert>
-        ) : null}
-      </div>
+      <Grid container justifyContent={"center"} alignItems={"center"} height={"100vh"}>
+        <Card variant="outlined" style={{ width: "max-content", padding: "2.5rem", borderRadius: "20px" }}>
+          <form style={{ display: "flex", flexDirection: "column", gap: "2rem" }} onSubmit={(e) => e.preventDefault()}>
+            <TextField onChange={(e: any) => setImg(e.target.files[0])} label="File" variant="outlined" type="file" />
+            <TextField
+              onChange={(e) => setTextarea(e.target.value)}
+              label="Description"
+              variant="outlined"
+              value={textarea}
+              type="text"
+              rows={6}
+              multiline
+            />
+            <Card style={{ display: "flex", flexWrap: "wrap", maxWidth: "500px", padding: "10px", gap: ".5rem" }}>
+              {tags.length > 0
+                ? tags.map((tag: string) => (
+                    <Tag name={tag} key={tags.indexOf(tag)} number={tags.indexOf(tag)} removeTag={removeTagFromArray} />
+                  ))
+                : ""}
+            </Card>
+            <TextField
+              label="Enter tags"
+              value={tag}
+              onChange={(e) => setTag(e.target.value)}
+              onKeyUp={handleTagInputKeyDown}
+            ></TextField>
+            <Button style={{ width: "max-content" }} variant="contained" onClick={handlePost}>
+              Post
+            </Button>
+          </form>
+          {error ? (
+            <Snackbar
+              anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+              open={open}
+              onClose={handleClose}
+              key={"bottom" + "left"}
+              autoHideDuration={3000}
+            >
+              <Alert severity="error">{error}</Alert>
+            </Snackbar>
+          ) : null}
+        </Card>
+      </Grid>
     </div>
   );
 }
